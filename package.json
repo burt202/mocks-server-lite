@@ -2,10 +2,13 @@
   "name": "my-mocks-server",
   "version": "0.0.1",
   "scripts": {
-    "prepare": "husky install",
+    "prepare": "husky",
     "lint": "eslint --ext js,ts,tsx src/",
     "prettier-check": "prettier \"**/*.ts{,x}\" --check",
+    "test": "vitest run",
+    "test:watch": "vitest",
     "pre-commit": "npm run lint && npm run prettier-check",
+    "pre-push": "npm run test",
     "mocks": "npx ts-node src/mocks/server.ts"
   },
   "dependencies": {
@@ -23,6 +26,7 @@
     "husky": "^9.0.11",
     "prettier": "^3.0.3",
     "ts-node": "^10.9.2",
-    "typescript": "^5.3.3"
+    "typescript": "^5.3.3",
+    "vitest": "^1.4.0"
   }
 }

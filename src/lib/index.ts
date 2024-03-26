@@ -1,13 +1,7 @@
 import * as express from "express"
 
-import {
-  Collection,
-  Config,
-  Route,
-  Server,
-  collectionSchema,
-  routeSchema,
-} from "./types"
+import {Collection, Config, Route, Server} from "./types"
+import {validateCollections, validateRoutes} from "./validators"
 
 let loadedRoutes: Array<Route> = []
 let loadedCollections: Array<Collection> = []
@@ -28,44 +22,20 @@ export const createServer = (config: Config): Server => {
     createLoaders: () => {
       return {
         loadRoutes: (routes) => {
-          const invalid = routes.filter((r) => {
-            const validatedResponse = routeSchema.safeParse(r)
-            return !validatedResponse.success
-          })
+          const result = validateRoutes(routes)
 
-          if (invalid.length) {
-            throw new Error("One or more routes not in expected shape")
+          if ("error" in result) {
+            throw new Error(result.message)
           }
 
           loadedRoutes = routes
         },
         loadCollections: (collections) => {
-          const invalid = collections.filter((r) => {
-            const validatedResponse = collectionSchema.safeParse(r)
-            return !validatedResponse.success
-          })
+          const result = validateCollections(collections, loadedRoutes)
 
-          if (invalid.length) {
-            throw new Error("One or more collections not in expected shape")
+          if ("error" in result) {
+            throw new Error(result.message)
           }
-
-          if (collections.length === 0) {
-            throw new Error("No collections found")
-          }
-
-          const allVariants = loadedRoutes.flatMap((r) => {
-            return r.variants.map((v) => {
-              return `${r.id}:${v.id}`
-            })
-          })
-
-          collections.forEach((c) => {
-            c.routes.forEach((r) => {
-              if (!allVariants.includes(r)) {
-                throw new Error(`Route: ${r} not found for collection: ${c.id}`)
-              }
-            })
-          })
 
           loadedCollections = collections
 
