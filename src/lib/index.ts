@@ -1,6 +1,7 @@
 import * as bodyParser from "body-parser"
 import * as express from "express"
 
+import createLogger from "./logger"
 import {Collection, Config, Route, Server} from "./types"
 import {
   validateCollections,
@@ -13,6 +14,8 @@ let loadedRoutes: Array<Route> = []
 let loadedCollections: Array<Collection> = []
 
 let router = express.Router()
+
+const logger = createLogger()
 
 function createEndpoints(
   config: Config,
@@ -32,7 +35,7 @@ function createEndpoints(
       | "patch"
 
     router[method](e.url, (req, res) => {
-      console.log(`Calling ${e.id}:${e.variant.id} - ${e.method} ${e.url}`)
+      logger.info(`Calling ${e.id}:${e.variant.id} - ${e.method} ${e.url}`)
 
       const delay = e.variant.delay ? e.variant.delay : config.delay ?? 0
 
@@ -47,11 +50,12 @@ function createEndpoints(
     "/__set-collection",
     (req: {body: {collection?: string}}, res) => {
       const selectedCollection = getSelectedCollection(
+        logger,
         loadedCollections,
         req.body.collection,
       )
 
-      console.log(`Using collection: ${selectedCollection.id}`)
+      logger.info(`Using collection: ${selectedCollection.id}`)
 
       createEndpoints(config, loadedRoutes, selectedCollection)
 
@@ -76,7 +80,8 @@ export const createServer = (config: Config): Server => {
       const routesResult = validateRoutes(routes)
 
       if ("error" in routesResult) {
-        throw new Error(routesResult.message)
+        logger.error(routesResult.message)
+        process.exit(1)
       }
 
       loadedRoutes = routes
@@ -86,17 +91,19 @@ export const createServer = (config: Config): Server => {
       const collectionsResult = validateCollections(collections, loadedRoutes)
 
       if ("error" in collectionsResult) {
-        throw new Error(collectionsResult.message)
+        logger.error(collectionsResult.message)
+        process.exit(1)
       }
 
       loadedCollections = collections
 
       const selectedCollection = getSelectedCollection(
+        logger,
         loadedCollections,
         config.selected,
       )
 
-      console.log(`Using collection: ${selectedCollection.id}`)
+      logger.info(`Using collection: ${selectedCollection.id}`)
 
       createEndpoints(config, loadedRoutes, selectedCollection)
 
@@ -110,7 +117,7 @@ export const createServer = (config: Config): Server => {
       })
 
       app.listen(port, () => {
-        console.log(`Mocks server listening on port ${port}`)
+        logger.info(`Mocks server listening on port ${port}`)
       })
 
       return Promise.resolve()

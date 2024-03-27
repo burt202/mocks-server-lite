@@ -38,6 +38,11 @@ export interface Config {
   port?: string
 }
 
+export interface Logger {
+  info: (msg: string) => void
+  error: (msg: string) => void
+}
+
 export interface Server {
   start: ({
     routes,

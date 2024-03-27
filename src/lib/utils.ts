@@ -1,4 +1,4 @@
-import {Collection, collectionSchema, Route, routeSchema} from "./types"
+import {Collection, collectionSchema, Logger, Route, routeSchema} from "./types"
 
 export const validateRoutes = (
   routes: Array<Route>,
@@ -64,6 +64,7 @@ export const validateCollections = (
 }
 
 export function getSelectedCollection(
+  logger: Logger,
   loadedCollections: Array<Collection>,
   name?: string,
 ) {
@@ -71,6 +72,8 @@ export function getSelectedCollection(
 
   const found = loadedCollections.find((c) => c.id === name)
   if (found) return found
+
+  logger.error(`Collection ${name} not found`)
 
   return loadedCollections[0]
 }
