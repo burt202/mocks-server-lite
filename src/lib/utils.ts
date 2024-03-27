@@ -62,3 +62,15 @@ export const validateCollections = (
 
   return {success: true}
 }
+
+export function getSelectedCollection(
+  loadedCollections: Array<Collection>,
+  name?: string,
+) {
+  if (!name) return loadedCollections[0]
+
+  const found = loadedCollections.find((c) => c.id === name)
+  if (found) return found
+
+  return loadedCollections[0]
+}

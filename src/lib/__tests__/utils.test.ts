@@ -1,7 +1,7 @@
 import {expect, describe, it} from "vitest"
 
 import {Collection, Route} from "../types"
-import {validateCollections, validateRoutes} from "../validators"
+import {validateCollections, validateRoutes} from "../utils"
 
 describe("validateRoutes", () => {
   it("should return error when passed routes doesnt match schema", () => {

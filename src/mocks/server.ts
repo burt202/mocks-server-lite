@@ -8,7 +8,7 @@ const server = createServer({
 })
 
 void server.start().then(() => {
-  const {loadRoutes, loadCollections} = server.createLoaders()
+  const {loadRoutes, loadCollections} = server.createLoaders() // TODO change this
 
   loadRoutes(routes)
   loadCollections(collections)

@@ -16,6 +16,7 @@ export const routeSchema = z.object({
     z.literal("GET"),
     z.literal("POST"),
     z.literal("PUT"),
+    z.literal("PATCH"),
     z.literal("DELETE"),
   ]),
   variants: z.array(routeVariantSchema),
