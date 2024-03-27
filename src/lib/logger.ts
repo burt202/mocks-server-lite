@@ -1,7 +1,9 @@
+import {format} from "date-fns"
+
 import {Logger} from "./types"
 
 function log(level: string, msg: string) {
-  console.log(`${Date.now()} [${level}] ${msg}`)
+  console.log(`${format(new Date(), "HH:mm:ss:SS")} [${level}] ${msg}`)
 }
 
 export default function createLogger(): Logger {
