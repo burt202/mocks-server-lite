@@ -74,3 +74,29 @@ export function getSelectedCollection(
 
   return loadedCollections[0]
 }
+
+export function getEndpointsForCollection(
+  collection: Collection,
+  routes: Array<Route>,
+) {
+  return collection.routes.flatMap((r) => {
+    const parts = r.split(":")
+    const routeId = parts[0]
+    const variantId = parts[1]
+
+    const routeMatch = routes.find((lr) => lr.id === routeId)
+    if (!routeMatch) return []
+
+    const variantMatch = routeMatch.variants.find((v) => v.id === variantId)
+    if (!variantMatch) return []
+
+    return [
+      {
+        id: routeMatch.id,
+        url: routeMatch.url,
+        method: routeMatch.method,
+        variant: variantMatch,
+      },
+    ]
+  })
+}
