@@ -2,6 +2,7 @@ import {z} from "zod"
 
 const routeVariantSchema = z.object({
   id: z.string(),
+  delay: z.number().optional(),
   type: z.union([z.literal("json"), z.literal("middleware")]),
   options: z.object({
     status: z.number(),

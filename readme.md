@@ -10,7 +10,6 @@
 ### TODO
 
 - pretty terminal logging
-- per variant optional delay
 - better not found error
 - middleware
 - calling same endpoint multiple times (callcount)

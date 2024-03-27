@@ -34,10 +34,12 @@ function createEndpoints(
     router[method](e.url, (req, res) => {
       console.log(`Calling ${e.id}:${e.variant.id} - ${e.method} ${e.url}`)
 
+      const delay = e.variant.delay ? e.variant.delay : config.delay ?? 0
+
       setTimeout(() => {
         res.status(e.variant.options.status)
         res.send(e.variant.options.body)
-      }, config.delay ?? 0)
+      }, delay)
     })
   })
 
