@@ -7,9 +7,4 @@ const server = createServer({
   selected: process.env.SELECTED_MOCKS_COLLECTION ?? "base",
 })
 
-void server.start().then(() => {
-  const {loadRoutes, loadCollections} = server.createLoaders() // TODO change this
-
-  loadRoutes(routes)
-  loadCollections(collections)
-})
+void server.start({routes, collections})

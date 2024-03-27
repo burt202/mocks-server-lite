@@ -37,12 +37,12 @@ export interface Config {
   port?: string
 }
 
-interface Loaders {
-  loadRoutes: (routes: Array<Route>) => void
-  loadCollections: (collections: Array<Collection>) => void
-}
-
 export interface Server {
-  start: () => Promise<void>
-  createLoaders: () => Loaders
+  start: ({
+    routes,
+    collections,
+  }: {
+    routes: Array<Route>
+    collections: Array<Collection>
+  }) => Promise<void>
 }

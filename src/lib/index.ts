@@ -28,7 +28,42 @@ export const createServer = (config: Config): Server => {
   const app = express()
 
   return {
-    start: async () => {
+    start: async ({
+      routes,
+      collections,
+    }: {
+      routes: Array<Route>
+      collections: Array<Collection>
+    }) => {
+      // Load routes
+
+      const routesResult = validateRoutes(routes)
+
+      if ("error" in routesResult) {
+        throw new Error(routesResult.message)
+      }
+
+      loadedRoutes = routes
+
+      // Load collections
+
+      const collectionsResult = validateCollections(collections, loadedRoutes)
+
+      if ("error" in collectionsResult) {
+        throw new Error(collectionsResult.message)
+      }
+
+      loadedCollections = collections
+
+      const selectedCollection = getSelectedCollection(
+        loadedCollections,
+        config.selected,
+      )
+
+      console.log(`Using collection: ${selectedCollection.id}`)
+
+      createEndpoints(app, config, selectedCollection)
+
       const port = config.port ?? 3000
 
       app.post(
@@ -52,37 +87,6 @@ export const createServer = (config: Config): Server => {
       })
 
       return Promise.resolve()
-    },
-    createLoaders: () => {
-      return {
-        loadRoutes: (routes) => {
-          const result = validateRoutes(routes)
-
-          if ("error" in result) {
-            throw new Error(result.message)
-          }
-
-          loadedRoutes = routes
-        },
-        loadCollections: (collections) => {
-          const result = validateCollections(collections, loadedRoutes)
-
-          if ("error" in result) {
-            throw new Error(result.message)
-          }
-
-          loadedCollections = collections
-
-          const selectedCollection = getSelectedCollection(
-            loadedCollections,
-            config.selected,
-          )
-
-          console.log(`Using collection: ${selectedCollection.id}`)
-
-          createEndpoints(app, config, selectedCollection)
-        },
-      }
     },
   }
 }
