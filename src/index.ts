@@ -38,10 +38,20 @@ function createEndpoints(
       logger.info(`Calling ${e.id}:${e.variant.id} - ${e.method} ${e.url}`)
 
       const delay = e.variant.delay ? e.variant.delay : config.delay ?? 0
+      const variantType = e.variant.type
 
       setTimeout(() => {
-        res.status(e.variant.options.status)
-        res.send(e.variant.options.body)
+        switch (variantType) {
+          case "json": {
+            res.status(e.variant.response.status)
+            res.send(e.variant.response.body)
+            break
+          }
+          case "handler": {
+            e.variant.response(req, res)
+            break
+          }
+        }
       }, delay)
     })
   })

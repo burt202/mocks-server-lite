@@ -25,7 +25,7 @@ describe("validateRoutes", () => {
           {
             id: "success",
             type: "json" as const,
-            options: {
+            response: {
               status: 200,
               body: [],
             },
@@ -94,7 +94,7 @@ describe("validateCollections", () => {
           {
             id: "success",
             type: "json" as const,
-            options: {
+            response: {
               status: 200,
               body: [],
             },

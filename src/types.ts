@@ -1,14 +1,32 @@
+import {Request, Response} from "express"
 import {z} from "zod"
 
-const routeVariantSchema = z.object({
+const routeVariantBaseSchema = z.object({
   id: z.string(),
   delay: z.number().optional(),
-  type: z.union([z.literal("json"), z.literal("middleware")]),
-  options: z.object({
+})
+
+type RouteVariantBase = z.infer<typeof routeVariantBaseSchema>
+
+const routeVariantJsonSchema = routeVariantBaseSchema.extend({
+  type: z.literal("json"),
+  response: z.object({
     status: z.number(),
     body: z.unknown(),
   }),
 })
+
+type RouteVariantJson = z.infer<typeof routeVariantJsonSchema>
+
+const routeVariantHandlerSchema = routeVariantBaseSchema.extend({
+  type: z.literal("handler"),
+  response: z.function(),
+})
+
+type RouteVariantHandler = RouteVariantBase & {
+  type: "handler"
+  response: (req: Request, res: Response) => void
+}
 
 export const routeSchema = z.object({
   id: z.string(),
@@ -20,10 +38,14 @@ export const routeSchema = z.object({
     z.literal("PATCH"),
     z.literal("DELETE"),
   ]),
-  variants: z.array(routeVariantSchema),
+  variants: z.array(
+    z.union([routeVariantJsonSchema, routeVariantHandlerSchema]),
+  ),
 })
 
-export type Route = z.infer<typeof routeSchema>
+export type Route = Omit<z.infer<typeof routeSchema>, "variants"> & {
+  variants: Array<RouteVariantJson | RouteVariantHandler>
+}
 
 export const collectionSchema = z.object({
   id: z.string(),
