@@ -9,7 +9,6 @@
 
 ### TODO
 
-- pretty terminal logging
 - better runtime not found error
 - middleware
 - calling same endpoint multiple times (callcount)

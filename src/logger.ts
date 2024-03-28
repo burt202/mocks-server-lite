@@ -1,3 +1,4 @@
+import chalk from "chalk"
 import {format} from "date-fns"
 
 import {Logger} from "./types"
@@ -8,7 +9,7 @@ function log(level: string, msg: string) {
 
 export default function createLogger(): Logger {
   return {
-    info: (msg) => log("info", msg),
-    error: (msg) => log("error", msg),
+    info: (msg) => log(chalk.green("info"), msg),
+    error: (msg) => log(chalk.red("error"), msg),
   }
 }
