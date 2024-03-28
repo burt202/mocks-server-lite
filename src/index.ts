@@ -116,6 +116,11 @@ export const createServer = (config: Config): Server => {
         router(req, res, next)
       })
 
+      app.use((req, res) => {
+        logger.error(`${req.url} not found`)
+        res.sendStatus(404)
+      })
+
       app.listen(port, () => {
         logger.info(`Mocks server listening on port ${port}`)
       })
