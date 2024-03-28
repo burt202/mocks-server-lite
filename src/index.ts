@@ -1,5 +1,5 @@
 import * as bodyParser from "body-parser"
-import * as express from "express"
+import express from "express"
 
 import createLogger from "./logger"
 import {Collection, Config, Route, Server} from "./types"
@@ -124,3 +124,5 @@ export const createServer = (config: Config): Server => {
     },
   }
 }
+
+export * from "./types"
