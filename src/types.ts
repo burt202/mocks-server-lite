@@ -1,4 +1,4 @@
-import {Request, Response} from "express"
+import {Request, RequestHandler, Response} from "express"
 import {z} from "zod"
 
 const routeVariantBaseSchema = z.object({
@@ -20,11 +20,13 @@ type RouteVariantJson = z.infer<typeof routeVariantJsonSchema>
 
 const routeVariantHandlerSchema = routeVariantBaseSchema.extend({
   type: z.literal("handler"),
+  middleware: z.array(z.function()).optional(),
   response: z.function(),
 })
 
 type RouteVariantHandler = RouteVariantBase & {
   type: "handler"
+  middleware?: Array<RequestHandler>
   response: (req: Request, res: Response) => void
 }
 
@@ -57,7 +59,7 @@ export type Collection = z.infer<typeof collectionSchema>
 export interface Config {
   delay?: number
   selected?: string
-  port?: string
+  port?: number
 }
 
 export interface Logger {

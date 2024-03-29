@@ -1,4 +1,5 @@
 import * as bodyParser from "body-parser"
+import cors from "cors"
 import express from "express"
 
 import createLogger from "./logger"
@@ -34,7 +35,10 @@ function createEndpoints(
       | "delete"
       | "patch"
 
-    router[method](e.url, (req, res) => {
+    const middlewares =
+      e.variant.type === "handler" ? e.variant.middleware ?? [] : []
+
+    router[method](e.url, ...middlewares, (req, res) => {
       logger.info(`Calling ${e.id}:${e.variant.id} - ${e.method} ${e.url}`)
 
       const delay = e.variant.delay ? e.variant.delay : config.delay ?? 0
@@ -121,6 +125,8 @@ export const createServer = (config: Config): Server => {
 
       app.use(bodyParser.urlencoded({extended: false}))
       app.use(bodyParser.json())
+
+      app.use(cors())
 
       app.use(function replaceableRouter(req, res, next) {
         router(req, res, next)
