@@ -24,10 +24,14 @@ const routeVariantHandlerSchema = routeVariantBaseSchema.extend({
   response: z.function(),
 })
 
+export interface ResponseHandlerCtx {
+  callCount: number
+}
+
 type RouteVariantHandler = RouteVariantBase & {
   type: "handler"
   middleware?: Array<RequestHandler>
-  response: (req: Request, res: Response) => void
+  response: (req: Request, res: Response, ctx: ResponseHandlerCtx) => void
 }
 
 export const routeSchema = z.object({

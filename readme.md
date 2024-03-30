@@ -3,4 +3,6 @@
 ### TODO
 
 - schema
-- calling same endpoint multiple times (callcount)
+- test POST endpoint
+- test url and search params
+- test dynamic params

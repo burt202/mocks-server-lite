@@ -14,9 +14,19 @@ import {
 let loadedRoutes: Array<Route> = []
 let loadedCollections: Array<Collection> = []
 
+let callCounts: Record<string, number> = {}
+
 let router = express.Router()
 
 const logger = createLogger()
+
+function addToCallCount(url: string) {
+  if (callCounts[url]) {
+    callCounts[url] = callCounts[url] + 1
+  } else {
+    callCounts[url] = 1
+  }
+}
 
 function createEndpoints(
   config: Config,
@@ -25,6 +35,7 @@ function createEndpoints(
 ) {
   router = express.Router()
 
+  callCounts = {}
   const endpoints = getEndpointsForCollection(selectedCollection, loadedRoutes)
 
   endpoints.forEach((e) => {
@@ -40,6 +51,7 @@ function createEndpoints(
 
     router[method](e.url, ...middlewares, (req, res) => {
       logger.info(`Calling ${e.id}:${e.variant.id} - ${e.method} ${e.url}`)
+      addToCallCount(req.url)
 
       const delay = e.variant.delay ? e.variant.delay : config.delay ?? 0
       const variantType = e.variant.type
@@ -52,7 +64,7 @@ function createEndpoints(
             break
           }
           case "handler": {
-            e.variant.response(req, res)
+            e.variant.response(req, res, {callCount: callCounts[req.url]})
             break
           }
         }
