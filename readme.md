@@ -2,7 +2,6 @@
 
 ### TODO
 
-- schema
-- test POST endpoint
-- test url and search params
-- test dynamic params
+- validate request via schema
+- test POST endpoint with body
+- test search params

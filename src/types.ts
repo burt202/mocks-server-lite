@@ -16,7 +16,7 @@ const routeVariantJsonSchema = routeVariantBaseSchema.extend({
   }),
 })
 
-type RouteVariantJson = z.infer<typeof routeVariantJsonSchema>
+export type RouteVariantJson = z.infer<typeof routeVariantJsonSchema>
 
 const routeVariantHandlerSchema = routeVariantBaseSchema.extend({
   type: z.literal("handler"),
@@ -28,10 +28,10 @@ export interface ResponseHandlerCtx {
   callCount: number
 }
 
-type RouteVariantHandler = RouteVariantBase & {
+export type RouteVariantHandler<Req = object> = RouteVariantBase & {
   type: "handler"
   middleware?: Array<RequestHandler>
-  response: (req: Request, res: Response, ctx: ResponseHandlerCtx) => void
+  response: (req: Request & Req, res: Response, ctx: ResponseHandlerCtx) => void
 }
 
 export const routeSchema = z.object({
