@@ -1,6 +1,6 @@
 {
   "name": "mocks-server-lite",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Mocking server supporting multiple route variants and mocks",
   "keywords": [
     "mocks",
