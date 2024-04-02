@@ -80,9 +80,16 @@ export interface Logger {
   error: (msg: string) => void
 }
 
-export interface WebSocketHandler {
-  id: string
-  path: string
+export const webSocketHandlerSchema = z.object({
+  id: z.string(),
+  path: z.string(),
+  handler: z.function(),
+})
+
+export type WebSocketHandler = Omit<
+  z.infer<typeof webSocketHandlerSchema>,
+  "handler"
+> & {
   handler: (wss: webSocket.Server) => void
 }
 

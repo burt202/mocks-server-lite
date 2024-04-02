@@ -11,6 +11,7 @@ import {
   validateRoutes,
   getSelectedCollection,
   getEndpointsForCollection,
+  validateWebSockets,
 } from "./utils"
 
 let loadedRoutes: Array<Route> = []
@@ -151,6 +152,13 @@ export const createServer = (config: Config): Server => {
       })
 
       if (webSockets) {
+        const webSocketsResult = validateWebSockets(webSockets)
+
+        if ("error" in webSocketsResult) {
+          logger.error(webSocketsResult.message)
+          process.exit(1)
+        }
+
         webSockets.forEach((s) => {
           const wss = new webSocket.Server({server: httpServer, path: s.path})
           logger.info(

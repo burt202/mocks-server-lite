@@ -1,4 +1,12 @@
-import {Collection, collectionSchema, Logger, Route, routeSchema} from "./types"
+import {
+  Collection,
+  collectionSchema,
+  Logger,
+  Route,
+  routeSchema,
+  WebSocketHandler,
+  webSocketHandlerSchema,
+} from "./types"
 
 export const validateRoutes = (
   routes: Array<Route>,
@@ -57,6 +65,24 @@ export const validateCollections = (
     return {
       error: true,
       message: err.message,
+    }
+  }
+
+  return {success: true}
+}
+
+export const validateWebSockets = (
+  webSockets: Array<WebSocketHandler>,
+): {success: true} | {error: true; message: string} => {
+  const invalid = webSockets.filter((r) => {
+    const validatedResponse = webSocketHandlerSchema.safeParse(r)
+    return !validatedResponse.success
+  })
+
+  if (invalid.length) {
+    return {
+      error: true,
+      message: "One or more web sockets not in expected shape",
     }
   }
 

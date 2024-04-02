@@ -1,7 +1,7 @@
 import {expect, describe, it} from "@jest/globals"
 
-import {Collection, Route} from "../types"
-import {validateCollections, validateRoutes} from "../utils"
+import {Collection, Route, WebSocketHandler} from "../types"
+import {validateCollections, validateRoutes, validateWebSockets} from "../utils"
 
 describe("validateRoutes", () => {
   it("should return error when passed routes doesnt match schema", () => {
@@ -104,6 +104,33 @@ describe("validateCollections", () => {
     ]
 
     const res = validateCollections(collections, routes)
+
+    expect(res).toEqual({success: true})
+  })
+})
+
+describe("validateWebSockets", () => {
+  it("should return error when passed web sockets doesnt match schema", () => {
+    const webSockets = ["invalid"] as unknown as Array<WebSocketHandler>
+
+    const res = validateWebSockets(webSockets)
+
+    expect(res).toEqual({
+      error: true,
+      message: "One or more web sockets not in expected shape",
+    })
+  })
+
+  it("should return successfully when valid web sockets are passed", () => {
+    const webSockets = [
+      {
+        id: "get-users",
+        path: "chat",
+        handler: () => {},
+      },
+    ]
+
+    const res = validateWebSockets(webSockets)
 
     expect(res).toEqual({success: true})
   })

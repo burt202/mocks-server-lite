@@ -2,4 +2,5 @@
 
 ### TODO
 
-- validate web socket input
+- publish pipeline
+- documentation
