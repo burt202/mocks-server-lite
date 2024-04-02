@@ -86,11 +86,13 @@ export const webSocketHandlerSchema = z.object({
   handler: z.function(),
 })
 
+export type WebSocketServer = webSocket.Server
+
 export type WebSocketHandler = Omit<
   z.infer<typeof webSocketHandlerSchema>,
   "handler"
 > & {
-  handler: (wss: webSocket.Server) => void
+  handler: (wss: WebSocketServer) => void
 }
 
 export interface Server {

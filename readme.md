@@ -4,6 +4,10 @@
 
 - documentation
 
+### Example Repo
+
+[https://github.com/burt202/mocks-server-lite-example](https://github.com/burt202/mocks-server-lite-example)
+
 ### Publishing
 
 - ensure all changes are pushed to `main`
