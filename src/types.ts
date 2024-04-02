@@ -28,10 +28,18 @@ export interface ResponseHandlerCtx {
   callCount: number
 }
 
-export type RouteVariantHandler<Req = object> = RouteVariantBase & {
+export type RouteVariantHandler<
+  Params = object,
+  Body = object,
+  Query = object,
+> = RouteVariantBase & {
   type: "handler"
   middleware?: Array<RequestHandler>
-  response: (req: Request & Req, res: Response, ctx: ResponseHandlerCtx) => void
+  response: (
+    req: Request<Params, object, Body, Query>,
+    res: Response,
+    ctx: ResponseHandlerCtx,
+  ) => void
 }
 
 export const routeSchema = z.object({
