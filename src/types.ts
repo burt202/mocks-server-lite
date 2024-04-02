@@ -1,4 +1,5 @@
 import {Request, RequestHandler, Response} from "express"
+import webSocket from "ws"
 import {z} from "zod"
 
 const routeVariantBaseSchema = z.object({
@@ -79,12 +80,20 @@ export interface Logger {
   error: (msg: string) => void
 }
 
+export interface WebSocketHandler {
+  id: string
+  path: string
+  handler: (wss: webSocket.Server) => void
+}
+
 export interface Server {
   start: ({
     routes,
     collections,
+    webSockets,
   }: {
     routes: Array<Route>
     collections: Array<Collection>
+    webSockets?: Array<WebSocketHandler>
   }) => Promise<void>
 }

@@ -2,4 +2,4 @@
 
 ### TODO
 
-- websockets?
+- validate web socket input

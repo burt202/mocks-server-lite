@@ -1,6 +1,8 @@
 import * as bodyParser from "body-parser"
 import cors from "cors"
 import express from "express"
+import server from "http"
+import webSocket from "ws"
 
 import createLogger from "./logger"
 import {Collection, Config, Route, Server} from "./types"
@@ -92,15 +94,10 @@ function createEndpoints(
 
 export const createServer = (config: Config): Server => {
   const app = express()
+  const httpServer = server.createServer(app)
 
   return {
-    start: async ({
-      routes,
-      collections,
-    }: {
-      routes: Array<Route>
-      collections: Array<Collection>
-    }) => {
+    start: async ({routes, collections, webSockets}) => {
       // Load routes
 
       const routesResult = validateRoutes(routes)
@@ -149,9 +146,19 @@ export const createServer = (config: Config): Server => {
         res.sendStatus(404)
       })
 
-      app.listen(port, () => {
+      httpServer.listen(port, () => {
         logger.info(`Mocks server listening on port ${port}`)
       })
+
+      if (webSockets) {
+        webSockets.forEach((s) => {
+          const wss = new webSocket.Server({server: httpServer, path: s.path})
+          logger.info(
+            `Mock '${s.id}' web socket server running at path: ${s.path}`,
+          )
+          s.handler(wss)
+        })
+      }
 
       return Promise.resolve()
     },
