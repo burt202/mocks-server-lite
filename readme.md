@@ -11,7 +11,8 @@
 ### Publishing
 
 - ensure all changes are pushed to `main`
-- ensure `package.json` version has been updated accordingly
+- ensure `package.json` version has been updated accordingly and run `npm i`
+- commit version bump
 - go to the releases page and click 'Draft a new release'
 - for 'Choose a tag', click create a new tag with the tag matches the new version number
 - the title can again just be the version number

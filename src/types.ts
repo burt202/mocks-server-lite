@@ -1,5 +1,5 @@
 import {Request, RequestHandler, Response} from "express"
-import webSocket from "ws"
+import {WebSocketServer} from "ws"
 import {z} from "zod"
 
 const routeVariantBaseSchema = z.object({
@@ -85,8 +85,6 @@ export const webSocketHandlerSchema = z.object({
   path: z.string(),
   handler: z.function(),
 })
-
-export type WebSocketServer = webSocket.Server
 
 export type WebSocketHandler = Omit<
   z.infer<typeof webSocketHandlerSchema>,
