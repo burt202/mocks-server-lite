@@ -1,4 +1,4 @@
-# Mocks Server
+# Mocks Server Lite
 
 ### TODO
 

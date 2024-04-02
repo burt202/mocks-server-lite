@@ -1,6 +1,27 @@
 {
   "name": "mocks-server-lite",
   "version": "0.0.1",
+  "description": "Mocking server supporting multiple route variants and mocks",
+  "keywords": [
+    "mocks",
+    "server",
+    "lite",
+    "mock",
+    "routes",
+    "route variants",
+    "web sockets",
+    "api",
+    "rest",
+    "express",
+    "testing",
+    "development",
+    "middleware"
+  ],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/burt202/mocks-server-lite.git"
+  },
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
