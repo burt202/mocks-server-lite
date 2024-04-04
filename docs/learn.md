@@ -80,7 +80,7 @@ export const createUser: Route = {
 }
 ```
 
-The `RouteVariantHandler` takes three type params, the first for url params, the second for body and the third for query params, so everything can be properly typed.
+The `RouteVariantHandler` type takes three type params, the first for url params, the second for body and the third for query params, so everything can be properly typed.
 
 The response handler function also gets passed a third parameter:
 
