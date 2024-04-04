@@ -6,6 +6,8 @@ Credit: This is heavily inspired by [mocks-server](https://github.com/mocks-serv
 
 Node.js mock server running live, interactive mocks in place of real APIs. **It makes able to define many different responses for a same route**, so, you can change the whole mocked API behavior by simply changing the response of one or many routes while the server is running. This really helps with local FrontEnd development when the BackEnd isnt ready/available and also really good for automated test runs where you want to change how the backing server behaves whilst it is still running.
 
+[Installation/Getting Started](https://github.com/burt202/mocks-server-lite/blob/main/docs/learn.md)
+
 ### Main Features
 
 - define multiple mock responses ([variants](https://github.com/burt202/mocks-server-lite/blob/main/docs/learn.md#variants)) for api endpoints ([routes](https://github.com/burt202/mocks-server-lite/blob/main/docs/learn.md#routes))

@@ -1,3 +1,28 @@
+### Installation/Getting Started
+
+Add it to your project dependencies using NPM:
+
+```
+npm i -D mocks-server-lite
+```
+
+Add a script to `package.json`, below is an example for TypeScript using `ts-node`:
+
+```
+{
+  "scripts": {
+    ...
+    "mocks" : "npx ts-node mocks/server.ts"
+  }
+}
+```
+
+This enables to start the server by simply running a command in the project folder.
+
+```
+npm run mocks
+```
+
 ### Routes
 
 TODO
@@ -8,7 +33,20 @@ TODO
 
 ### Collections
 
-TODO
+Collections are for defining the specific "responses" to be used by each different route. The user can choose which collection the mock server uses and this can be changed without restarting the server.
+
+```
+{
+  "id": "all-users",
+  "routes": ["get-users:success"]
+}
+```
+
+The `id` should be unique and is used to set the current collection either on server startup or via the `/__set-collection` endpoint.
+
+The `routes` array should be a list of valid route/variant pairing in the form of `[routeId]:[variantId]`
+
+You can have as many collections as you want, and each collection can have as many routes as you want
 
 ### Change Collection
 
