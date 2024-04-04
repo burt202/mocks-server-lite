@@ -27,7 +27,8 @@ npm run mocks
 
 Routes are for defining the endpoints you want to mock where each have a `url`, `method` and an array of `variants`. Variants are describing ways in which an endpoint can respond.
 
-Route id's should be unique across all routes, whereas variant id's only need to be unique within its route.
+- You can add a `delay` to any variant to simulate response time, this overrides the global value if set
+- Route id's should be unique across all routes, whereas variant id's only need to be unique within its route.
 
 ```
 import {Route} from "mocks-server-lite"
@@ -89,10 +90,50 @@ The response handler function also gets passed a third parameter:
 }
 ```
 
-`callCount` keeps count of how many times an endpoint has been called since the server started or the last collection change. Useful if ou wanted to return something different on subsequent calls.
+`callCount` keeps count of how many times an endpoint has been called since the server started or the last collection change. Useful if you wanted to return something different on subsequent calls.
 
-TODO middleware
-TODO delay
+**Route Middleware**
+
+When using a `handler` response type, you can also pass an array of middleware to hand down to the underlying express route. See below for an example that uses `multer` to upload a file.
+
+```
+import {mkdirSync} from "fs"
+import {Route} from "mocks-server-lite"
+import multer from "multer"
+import path from "path"
+
+const UPLOAD_PATH = path.join(__dirname, "../uploads")
+
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    mkdirSync(UPLOAD_PATH, {recursive: true})
+    cb(null, UPLOAD_PATH)
+  },
+  filename: function (req, file, cb) {
+    cb(null, Date.now() + "-" + file.originalname)
+  },
+})
+
+const upload = multer({storage})
+
+const route: Route = {
+  id: "upload-pic",
+  url: "/api/profile",
+  method: "POST",
+  variants: [
+    {
+      id: "success",
+      type: "handler",
+      middleware: [upload.single("file")],
+      response: (_, res) => {
+        res.status(200)
+        res.send({result: "Uploaded!"})
+      },
+    },
+  ],
+}
+
+```
 
 ### Collections
 
@@ -153,7 +194,7 @@ void server.start({routes, collections, webSockets})
 
 | ---      | ---                     | ---                                                                                                                                                              |
 | -------- | ----------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| delay    | optional, no default    | Simulate response time by adding a global delay for every response, can be overriden by any individual route                                                     |
+| delay    | optional, no default    | Simulate response time by adding a global delay for every response, can be overriden by any individual route variant                                             |
 | selected | optional, no default    | Choose which collection to start with, if nothing is supplied, or selected doesnt match a known collection, the first collection in the collections list is used |
 | port     | optional, default: 3000 | Port on which to run the mock server                                                                                                                             |
 

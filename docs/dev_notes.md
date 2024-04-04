@@ -1,6 +1,5 @@
 ### TODO
 
-- delay by variant?
 - unique id detection
 
 ### Publishing
