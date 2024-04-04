@@ -23,23 +23,90 @@ This enables to start the server by simply running a command in the project fold
 npm run mocks
 ```
 
-### Routes
+### Routes & Variants
 
-TODO
+Routes are for defining the endpoints you want to mock where each have a `url`, `method` and an array of `variants`. Variants are describing ways in which an endpoint can respond.
 
-### Variants
+Route id's should be unique across all routes, whereas variant id's only need to be unique within its route.
 
-TODO
+```
+import {Route} from "mocks-server-lite"
 
-### Collections
+const route: Route = {
+  id: "login",
+  url: "/api/login",
+  method: "POST",
+  variants: [
+    {
+      id: "success",
+      type: "json",
+      response: {
+        status: 200,
+        body: {result: "Ok!"},
+      },
+    },
+    {
+      id: "error",
+      type: "json",
+      response: {
+        status: 400,
+        body: {error: "Invalid credentials"},
+      },
+    },
+  ],
+}
+```
 
-Collections are for defining the specific "responses" to be used by each different route. The user can choose which collection the mock server uses and this can be changed without restarting the server.
+Variants can be of `json` or `handler` type. The `json` type is shown above which is just for simple static responses. If you want to get access to the request object or write custom logic you can use the `handler` type.
+
+```
+const create: RouteVariantHandler<object, {name: string; role: string}> = {
+  id: "success",
+  type: "handler",
+  response: (req, res) => {
+    const {name, role} = req.body
+
+    res.status(200)
+    res.send({name, role})
+  },
+}
+
+export const createUser: Route = {
+  id: "create-users",
+  url: "/api/users",
+  method: "POST",
+  variants: [create],
+}
+```
+
+The `RouteVariantHandler` takes three type params, the first for url params, the second for body and the third for query params, so everything can be properly typed.
+
+The response handler function also gets passed a third parameter:
 
 ```
 {
-  "id": "all-users",
-  "routes": ["get-users:success"]
+  callCount: number
 }
+```
+
+`callCount` keeps count of how many times an endpoint has been called since the server started or the last collection change. Useful if ou wanted to return something different on subsequent calls.
+
+TODO middleware
+TODO delay
+
+### Collections
+
+Collections are for grouping route variant responses together. The user can choose which collection the mock server uses and this can be changed without restarting the server.
+
+```
+import {Collection} from "mocks-server-lite"
+
+const collections: Array<Collection> = [
+  {
+    "id": "all-users",
+    "routes": ["get-users:success"]
+  }
+]
 ```
 
 The `id` should be unique and is used to set the current collection either on server startup or via the `/__set-collection` endpoint.
