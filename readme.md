@@ -8,13 +8,13 @@ Node.js mock server running live, interactive mocks in place of real APIs. **It 
 
 ### Main Features
 
-- define multiple mock responses ([variants](https://github.com/burt202/mocks-server-lite/blob/main/docs/learn.md#variants)) for api endpoints (routes)
-- group together route mock responses in collections
-- change route responses without having to restart the mocks server
+- define multiple mock responses ([variants](https://github.com/burt202/mocks-server-lite/blob/main/docs/learn.md#variants)) for api endpoints ([routes](https://github.com/burt202/mocks-server-lite/blob/main/docs/learn.md#routes))
+- group together route mock responses in [collections](https://github.com/burt202/mocks-server-lite/blob/main/docs/learn.md#collections)
+- [change route responses](https://github.com/burt202/mocks-server-lite/blob/main/docs/learn.md#change-collection) without having to restart the mocks server
 - support route middleware
 - add response delays with route override
 - route call count so you can return something different on subsequent calls
-- web sockets support
+- [web sockets](https://github.com/burt202/mocks-server-lite/blob/main/docs/learn.md#web-sockets) support
 
 [Learn more...](https://github.com/burt202/mocks-server-lite/blob/main/docs/learn.md)
 

@@ -1,3 +1,7 @@
+### TODO
+
+- delay by variant?
+
 ### Publishing
 
 - ensure all changes are pushed to `main`
