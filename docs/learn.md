@@ -1,12 +1,13 @@
 ### Installation/Getting Started
 
-Add it to your project dependencies using NPM:
+Add it to your project dev dependencies using NPM:
 
 ```
 npm i -D mocks-server-lite
 ```
 
-Add a script to `package.json`, below is an example for TypeScript using `ts-node`:
+- Create a server file (see 'Server Config & Startup' section below)
+- Add a script to `package.json`, below is an example for TypeScript using `ts-node`:
 
 ```
 {

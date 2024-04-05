@@ -20,6 +20,16 @@ export const validateRoutes = (
     return {error: true, message: "One or more routes not in expected shape"}
   }
 
+  const ids = routes.map((r) => r.id)
+  const duplicates = findDuplicates(ids)
+
+  if (duplicates.length) {
+    return {
+      error: true,
+      message: `Route with id '${duplicates[0]}' already exists`,
+    }
+  }
+
   return {success: true}
 }
 
@@ -43,6 +53,16 @@ export const validateCollections = (
     return {
       error: true,
       message: "No collections found",
+    }
+  }
+
+  const ids = collections.map((c) => c.id)
+  const duplicates = findDuplicates(ids)
+
+  if (duplicates.length) {
+    return {
+      error: true,
+      message: `Collection with id '${duplicates[0]}' already exists`,
     }
   }
 
@@ -83,6 +103,16 @@ export const validateWebSockets = (
     return {
       error: true,
       message: "One or more web sockets not in expected shape",
+    }
+  }
+
+  const ids = webSockets.map((ws) => ws.id)
+  const duplicates = findDuplicates(ids)
+
+  if (duplicates.length) {
+    return {
+      error: true,
+      message: `Web socket with id '${duplicates[0]}' already exists`,
     }
   }
 
@@ -128,4 +158,23 @@ export function getEndpointsForCollection(
       },
     ]
   })
+}
+
+function findDuplicates(arr: Array<string>) {
+  const duplicates: Array<string> = []
+
+  arr.reduce(
+    (acc, cur) => {
+      if (acc[cur]) {
+        duplicates.push(cur)
+      } else {
+        acc[cur] = true
+      }
+
+      return acc
+    },
+    {} as Record<string, boolean>,
+  )
+
+  return duplicates
 }
