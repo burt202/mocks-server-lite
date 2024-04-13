@@ -1,10 +1,10 @@
 # Mocks Server Lite
 
-Credit: This is heavily inspired by [mocks-server](https://github.com/mocks-server/main) and takes some of the main concepts from it. It is massively simplified though, currently with only the core functionality as well as being TypeScript first. I created this because the `mocks-server` project seems to be inactive and doesnt come with types and a few other features I think is key, which are listed below.
+Credit: This is heavily inspired by [mocks-server](https://github.com/mocks-server/main) and takes some of the main concepts from it. It is massively simplified though, currently with only the core functionality as well as being TypeScript first. I created this because the `mocks-server` project doesnt currently seem to be very active and doesnt come with types and a few other features I think is key, which are listed below.
 
 ### Introduction
 
-Node.js mock server running live, interactive mocks in place of real APIs. **It makes able to define many different responses for a same route**, so, you can change the whole mocked API behavior by simply changing the response of one or many routes while the server is running. This really helps with local FrontEnd development when the BackEnd isnt ready/available and also really good for automated test runs where you want to change how the backing server behaves whilst it is still running.
+Node.js mock server that can run live, interactive mocks in place of real APIs. It allows you to define many different responses for a same route, so you can change the whole mocked API behavior by simply changing the response of one or many routes while the server is running. This really helps with local FrontEnd development when the BackEnd isnt ready/available and also really good for automated test runs where you want to change how the backing server behaves whilst it is still running.
 
 [Installation/Getting Started](https://github.com/burt202/mocks-server-lite/blob/main/docs/learn.md)
 
