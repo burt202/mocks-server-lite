@@ -188,7 +188,7 @@ const server = createServer({
   port?: number,
 })
 
-void server.start({routes, collections, webSockets})
+void server.start({routes, collections, webSockets, staticPaths})
 ```
 
 `.createServer` options
@@ -201,9 +201,9 @@ void server.start({routes, collections, webSockets})
 
 `.start` options
 
-This method just takes a single object where you pass in your routes, collections and web sockets.
-Inputs from all 3 of these are validated internally to ensure they are the correct shape, the server will exit early if not.
-Routes and collections are required, but web sockets are optional
+This method just takes a single object where you pass in your routes, collections, web sockets and static paths.
+Inputs from all 4 of these are validated internally to ensure they are the correct shape, the server will exit early if not.
+Routes and collections are required, but web sockets & static paths are optional
 
 ### Web Sockets
 
@@ -223,6 +223,24 @@ const chat: WebSocketHandler = {
     })
   },
 }
+```
+
+To add these, you just add them as an array when calling `server.start()`
+
+### Static Paths
+
+You can setup static paths to serve file assets at specific paths when the mocks server is running, but unlike routes and collections though, the behaviours of these cannot change dynamically.
+
+```
+import {StaticPathOptions} from "mocks-server-lite"
+
+const webSockets: Array<StaticPathOptions> = [
+  {
+    from: __dirname + "/static",
+    to: "/assets",
+  },
+]
+
 ```
 
 To add these, you just add them as an array when calling `server.start()`

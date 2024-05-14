@@ -1,6 +1,6 @@
 ### TODO
 
-- document static paths
+---
 
 ### Development/Testing
 
