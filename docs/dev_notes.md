@@ -1,6 +1,13 @@
 ### TODO
 
----
+- document static paths
+
+### Development/Testing
+
+- run `npm run build`
+- go to `mocks-server-lite-example` repo
+- run `npm link mocks-server-lite`
+- follow 'To Run' instructions in its readme
 
 ### Publishing
 

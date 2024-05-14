@@ -93,6 +93,13 @@ export type WebSocketHandler = Omit<
   handler: (wss: WebSocketServer) => void
 }
 
+export const staticPathOptionsSchema = z.object({
+  from: z.string(),
+  to: z.string(),
+})
+
+export type StaticPathOptions = z.infer<typeof staticPathOptionsSchema>
+
 export interface Server {
   start: ({
     routes,
@@ -102,5 +109,6 @@ export interface Server {
     routes: Array<Route>
     collections: Array<Collection>
     webSockets?: Array<WebSocketHandler>
+    staticPaths?: Array<StaticPathOptions>
   }) => Promise<void>
 }

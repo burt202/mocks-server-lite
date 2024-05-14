@@ -12,6 +12,7 @@ import {
   getSelectedCollection,
   getEndpointsForCollection,
   validateWebSockets,
+  validateStaticPaths,
 } from "./utils"
 
 let loadedRoutes: Array<Route> = []
@@ -98,7 +99,7 @@ export const createServer = (config: Config): Server => {
   const httpServer = server.createServer(app)
 
   return {
-    start: async ({routes, collections, webSockets}) => {
+    start: async ({routes, collections, webSockets, staticPaths}) => {
       // Load routes
 
       const routesResult = validateRoutes(routes)
@@ -129,9 +130,9 @@ export const createServer = (config: Config): Server => {
 
       logger.info(`Using collection: ${selectedCollection.id}`)
 
-      createEndpoints(config, loadedRoutes, selectedCollection)
+      // Create endpoints and middlewares
 
-      const port = config.port ?? 3000
+      createEndpoints(config, loadedRoutes, selectedCollection)
 
       app.use(bodyParser.urlencoded({extended: false}))
       app.use(bodyParser.json())
@@ -142,14 +143,36 @@ export const createServer = (config: Config): Server => {
         router(req, res, next)
       })
 
+      // Load static paths
+
+      if (staticPaths) {
+        const staticPathsResult = validateStaticPaths(staticPaths)
+
+        if ("error" in staticPathsResult) {
+          logger.error(staticPathsResult.message)
+          process.exit(1)
+        }
+
+        staticPaths.forEach((s) => {
+          app.use(s.to, express.static(s.from))
+          logger.info(`'${s.from}' being served at: ${s.to}`)
+        })
+      }
+
+      // Add route fallback & start server
+
       app.use((req, res) => {
         logger.error(`${req.url} not found`)
         res.sendStatus(404)
       })
 
+      const port = config.port ?? 3000
+
       httpServer.listen(port, () => {
         logger.info(`Mocks server listening on port ${port}`)
       })
+
+      // Load websockets
 
       if (webSockets) {
         const webSocketsResult = validateWebSockets(webSockets)

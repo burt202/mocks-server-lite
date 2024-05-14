@@ -4,6 +4,8 @@ import {
   Logger,
   Route,
   routeSchema,
+  StaticPathOptions,
+  staticPathOptionsSchema,
   WebSocketHandler,
   webSocketHandlerSchema,
 } from "./types"
@@ -113,6 +115,24 @@ export const validateWebSockets = (
     return {
       error: true,
       message: `Web socket with id '${duplicates[0]}' already exists`,
+    }
+  }
+
+  return {success: true}
+}
+
+export const validateStaticPaths = (
+  staticPaths: Array<StaticPathOptions>,
+): {success: true} | {error: true; message: string} => {
+  const invalid = staticPaths.filter((r) => {
+    const validatedResponse = staticPathOptionsSchema.safeParse(r)
+    return !validatedResponse.success
+  })
+
+  if (invalid.length) {
+    return {
+      error: true,
+      message: "One or more static paths not in expected shape",
     }
   }
 

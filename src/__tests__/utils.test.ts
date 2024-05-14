@@ -1,7 +1,12 @@
 import {expect, describe, it} from "@jest/globals"
 
-import {Collection, Route, WebSocketHandler} from "../types"
-import {validateCollections, validateRoutes, validateWebSockets} from "../utils"
+import {Collection, Route, WebSocketHandler, StaticPathOptions} from "../types"
+import {
+  validateCollections,
+  validateRoutes,
+  validateWebSockets,
+  validateStaticPaths,
+} from "../utils"
 
 describe("validateRoutes", () => {
   it("should return error when passed routes doesnt match schema", () => {
@@ -199,6 +204,32 @@ describe("validateWebSockets", () => {
     ]
 
     const res = validateWebSockets(webSockets)
+
+    expect(res).toEqual({success: true})
+  })
+})
+
+describe("validateStaticPaths", () => {
+  it("should return error when passed static paths doesnt match schema", () => {
+    const staticPaths = ["invalid"] as unknown as Array<StaticPathOptions>
+
+    const res = validateStaticPaths(staticPaths)
+
+    expect(res).toEqual({
+      error: true,
+      message: "One or more static paths not in expected shape",
+    })
+  })
+
+  it("should return successfully when valid static paths are passed", () => {
+    const staticPaths = [
+      {
+        from: "/public",
+        to: "/static",
+      },
+    ]
+
+    const res = validateStaticPaths(staticPaths)
 
     expect(res).toEqual({success: true})
   })
