@@ -159,7 +159,9 @@ export const createServer = (config: Config): Server => {
         })
       }
 
-      // Add route fallback & start server
+      // Add root/fallback routes & start server
+
+      app.get("/", (req, res) => res.sendStatus(200))
 
       app.use((req, res) => {
         logger.error(`${req.url} not found`)
