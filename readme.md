@@ -15,7 +15,7 @@ Node.js mock server that can run live, interactive mocks in place of real APIs. 
 - [change route responses](https://github.com/burt202/mocks-server-lite/blob/main/docs/learn.md#change-collection) without having to restart the mocks server
 - support route middleware
 - add response delays with route override
-- route call count so you can return something different on subsequent calls
+- call logs so you can return something different on subsequent calls
 - [web sockets](https://github.com/burt202/mocks-server-lite/blob/main/docs/learn.md#web-sockets) support
 - [static paths](https://github.com/burt202/mocks-server-lite/blob/main/docs/learn.md#static-paths) support
 

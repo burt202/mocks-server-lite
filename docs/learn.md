@@ -87,11 +87,22 @@ The response handler function also gets passed a third parameter:
 
 ```
 {
-  callCount: number
+  callLogs: CallLogEntry[]
+  previous: CallLogEntry[]
+}
+
+CallLogEntry = {
+  timestamp: string
+  method: string
+  url: string
+  path: string
+  params: {}
+  query: {}
 }
 ```
 
-`callCount` keeps count of how many times an endpoint has been called since the server started or the last collection change. Useful if you wanted to return something different on subsequent calls.
+`callLogs` keeps tracks of all endpoints called since the server started or the last collection change
+`previous` an array of all previous calls in the call log that match the current method AND path. Useful if you wanted to return something different on subsequent calls.
 
 **Route Middleware**
 
