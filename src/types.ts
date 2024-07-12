@@ -25,8 +25,18 @@ const routeVariantHandlerSchema = routeVariantBaseSchema.extend({
   response: z.function(),
 })
 
+export interface CallLogEntry {
+  timestamp: string
+  method: Request["method"]
+  url: Request["url"]
+  path: Request["path"]
+  params: Request["params"]
+  query: Request["query"]
+}
+
 export interface ResponseHandlerCtx {
-  callCount: number
+  callLogs: CallLogEntry[]
+  previous: CallLogEntry[]
 }
 
 export type RouteVariantHandler<

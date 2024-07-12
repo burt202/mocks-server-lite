@@ -5,7 +5,7 @@ import server from "http"
 import webSocket from "ws"
 
 import createLogger from "./logger"
-import {Collection, Config, Route, Server} from "./types"
+import {CallLogEntry, Collection, Config, Route, Server} from "./types"
 import {
   validateCollections,
   validateRoutes,
@@ -18,18 +18,21 @@ import {
 let loadedRoutes: Array<Route> = []
 let loadedCollections: Array<Collection> = []
 
-let callCounts: Record<string, number> = {}
+let callLogs: CallLogEntry[] = []
 
 let router = express.Router()
 
 const logger = createLogger()
 
-function addToCallCount(url: string) {
-  if (callCounts[url]) {
-    callCounts[url] = callCounts[url] + 1
-  } else {
-    callCounts[url] = 1
-  }
+function addCallToLogs(req: express.Request) {
+  callLogs.push({
+    timestamp: new Date().toISOString(),
+    method: req.method,
+    url: req.url,
+    path: req.path,
+    params: req.params,
+    query: req.query,
+  })
 }
 
 function createEndpoints(
@@ -39,7 +42,7 @@ function createEndpoints(
 ) {
   router = express.Router()
 
-  callCounts = {}
+  callLogs = []
   const endpoints = getEndpointsForCollection(selectedCollection, loadedRoutes)
 
   endpoints.forEach((e) => {
@@ -55,7 +58,12 @@ function createEndpoints(
 
     router[method](e.url, ...middlewares, (req, res) => {
       logger.info(`Calling ${e.id}:${e.variant.id} - ${e.method} ${e.url}`)
-      addToCallCount(req.url)
+
+      const previous = callLogs.filter((c) => {
+        return c.method === req.method && c.path === req.path
+      })
+
+      addCallToLogs(req)
 
       const delay = e.variant.delay ? e.variant.delay : config.delay ?? 0
       const variantType = e.variant.type
@@ -68,7 +76,7 @@ function createEndpoints(
             break
           }
           case "handler": {
-            e.variant.response(req, res, {callCount: callCounts[req.url]})
+            e.variant.response(req, res, {callLogs, previous})
             break
           }
         }
