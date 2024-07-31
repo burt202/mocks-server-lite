@@ -21,6 +21,12 @@ Node.js mock server that can run live, interactive mocks in place of real APIs. 
 
 [Learn more...](https://github.com/burt202/mocks-server-lite/blob/main/docs/learn.md)
 
+### FAQ
+
+- What's the advantage of this over https://mswjs.io/?
+
+No advantages per se but different in the fact youre actually calling a mocked server served at a URL rather than the request being intercepted at any level in code. Also different in that I don't see this as a mocking tool to use with `jest` or `vitest`, more to use with local development (if a BackEnd isnt ready/available) or supporting an E2E test run (using tools like `cypress` or `playwright`) where you dont want it hit a real BackEnd.
+
 ### Example Repo
 
 [https://github.com/burt202/mocks-server-lite-example](https://github.com/burt202/mocks-server-lite-example)
