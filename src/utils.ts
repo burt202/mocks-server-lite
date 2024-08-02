@@ -183,18 +183,15 @@ export function getEndpointsForCollection(
 function findDuplicates(arr: Array<string>) {
   const duplicates: Array<string> = []
 
-  arr.reduce(
-    (acc, cur) => {
-      if (acc[cur]) {
-        duplicates.push(cur)
-      } else {
-        acc[cur] = true
-      }
+  arr.reduce<Record<string, boolean>>((acc, cur) => {
+    if (acc[cur]) {
+      duplicates.push(cur)
+    } else {
+      acc[cur] = true
+    }
 
-      return acc
-    },
-    {} as Record<string, boolean>,
-  )
+    return acc
+  }, {})
 
   return duplicates
 }
