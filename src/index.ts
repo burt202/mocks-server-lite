@@ -54,7 +54,7 @@ function createEndpoints(
       | "patch"
 
     const middlewares =
-      e.variant.type === "handler" ? e.variant.middleware ?? [] : []
+      e.variant.type === "handler" ? (e.variant.middleware ?? []) : []
 
     router[method](e.url, ...middlewares, (req, res) => {
       logger.info(`Calling ${e.id}:${e.variant.id} - ${e.method} ${e.url}`)
@@ -65,7 +65,7 @@ function createEndpoints(
 
       addCallToLogs(req)
 
-      const delay = e.variant.delay ? e.variant.delay : config.delay ?? 0
+      const delay = e.variant.delay ? e.variant.delay : (config.delay ?? 0)
       const variantType = e.variant.type
 
       setTimeout(() => {
