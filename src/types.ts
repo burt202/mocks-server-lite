@@ -98,11 +98,15 @@ export const webSocketHandlerSchema = z.object({
 
 export type WebSocketServer = WebSocket.Server
 
+export interface WebSocketHandlerCtx {
+  logEvent: (eventType: "connected" | "messageSent") => void
+}
+
 export type WebSocketHandler = Omit<
   z.infer<typeof webSocketHandlerSchema>,
   "handler"
 > & {
-  handler: (wss: WebSocketServer) => void
+  handler: (wss: WebSocketServer, ctx: WebSocketHandlerCtx) => void
 }
 
 export const staticPathOptionsSchema = z.object({

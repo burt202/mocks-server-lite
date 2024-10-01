@@ -194,10 +194,22 @@ export const createServer = (config: Config): Server => {
 
         webSockets.forEach((s) => {
           const wss = new webSocket.Server({server: httpServer, path: s.path})
+
           logger.info(
             `Mock '${s.id}' web socket server running at path: ${s.path}`,
           )
-          s.handler(wss)
+
+          s.handler(wss, {
+            logEvent: (eventType) => {
+              if (eventType === "connected") {
+                logger.info(`Connected to '${s.id}' web socket`)
+              }
+
+              if (eventType === "messageSent") {
+                logger.info(`Sending message from '${s.id}' web socket`)
+              }
+            },
+          })
         })
       }
 
