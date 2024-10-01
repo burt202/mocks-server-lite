@@ -40,9 +40,9 @@ export interface ResponseHandlerCtx {
 }
 
 export type RouteVariantHandler<
-  Params = object,
-  Body = object,
-  Query = object,
+  Params = any, // eslint-disable-line @typescript-eslint/no-explicit-any
+  Body = any, // eslint-disable-line @typescript-eslint/no-explicit-any
+  Query = any, // eslint-disable-line @typescript-eslint/no-explicit-any
 > = RouteVariantBase & {
   type: "handler"
   middleware?: Array<RequestHandler>
