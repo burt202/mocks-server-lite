@@ -86,12 +86,18 @@ function createEndpoints(
 
   router.post(
     "/__set-collection",
-    (req: {body: {collection?: string}}, res) => {
+    (req: {body: {collection?: string; log?: string}}, res) => {
       const selectedCollection = getSelectedCollection(
         logger,
         loadedCollections,
         req.body.collection,
       )
+
+      logger.info(`------------------------------------------`)
+
+      if (req.body.log) {
+        logger.info(req.body.log)
+      }
 
       logger.info(`Using collection: ${selectedCollection.id}`)
 

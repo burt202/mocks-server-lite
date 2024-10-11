@@ -186,6 +186,8 @@ fetch(`http://localhost:3000/__set-collection`, {
 
 This can be very useful during a test run, see the [example repo](https://github.com/burt202/mocks-server-lite-example) where it is used for playwright E2E tests
 
+NOTE: You can pass an optional `log` body property if you want something specific to be logged when the collection is changed.
+
 ### Server Config & Startup
 
 Creating the server is very straight forward with minimal options:
