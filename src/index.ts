@@ -1,11 +1,20 @@
 import * as bodyParser from "body-parser"
 import cors from "cors"
 import express from "express"
-import server from "http"
-import webSocket from "ws"
+import http from "http"
+import * as stream from "node:stream"
+import webSocket, {WebSocket} from "ws"
 
 import createLogger from "./logger"
-import {CallLogEntry, Collection, Config, Route, Server} from "./types"
+import {
+  CallLogEntry,
+  Collection,
+  Config,
+  Route,
+  Server,
+  WebSocketHandler,
+  WsReq,
+} from "./types"
 import {
   validateCollections,
   validateRoutes,
@@ -39,6 +48,7 @@ function createEndpoints(
   config: Config,
   loadedRoutes: Array<Route>,
   selectedCollection: Collection,
+  webSockets?: Array<WebSocketHandler>,
 ) {
   router = express.Router()
 
@@ -101,16 +111,63 @@ function createEndpoints(
 
       logger.info(`Using collection: ${selectedCollection.id}`)
 
-      createEndpoints(config, loadedRoutes, selectedCollection)
+      createEndpoints(config, loadedRoutes, selectedCollection, webSockets)
 
       res.send("OK")
     },
   )
+
+  // Load websockets
+
+  if (!webSockets) return
+
+  webSockets.forEach((s) => {
+    const wss = new webSocket.Server({
+      noServer: true,
+      path: s.path,
+    })
+
+    logger.info(`Mock '${s.id}' web socket server running at path: ${s.path}`)
+
+    router.get(s.path, (req, res, next) => {
+      const wsReq = req as WsReq
+
+      if (!req.headers.upgrade || s.path !== req.url) {
+        next()
+      } else {
+        wss.handleUpgrade(
+          req,
+          wsReq.ws.socket,
+          wsReq.ws.head,
+          (ws: WebSocket) => {
+            logger.info(`Connected to '${s.id}' web socket`)
+
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-explicit-any, @typescript-eslint/unbound-method
+            const original = ws.send as any
+
+            ws.send = (...args: Parameters<typeof original>) => {
+              logger.info(`Sending message from '${s.id}' web socket`)
+              // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
+              return original.apply(ws, args)
+            }
+
+            s.handler(ws)
+          },
+        )
+      }
+    })
+  })
 }
 
 export const createServer = (config: Config): Server => {
   const app = express()
-  const httpServer = server.createServer(app)
+  const server = http.createServer(app)
+
+  server.on("upgrade", (req: WsReq, socket: stream.Duplex, head: Buffer) => {
+    const res = new http.ServerResponse(req)
+    req.ws = {socket, head}
+    app(req, res)
+  })
 
   return {
     start: async ({routes, collections, webSockets, staticPaths}) => {
@@ -144,9 +201,20 @@ export const createServer = (config: Config): Server => {
 
       logger.info(`Using collection: ${selectedCollection.id}`)
 
+      // Validate web sockets
+
+      if (webSockets) {
+        const webSocketsResult = validateWebSockets(webSockets)
+
+        if ("error" in webSocketsResult) {
+          logger.error(webSocketsResult.message)
+          process.exit(1)
+        }
+      }
+
       // Create endpoints and middlewares
 
-      createEndpoints(config, loadedRoutes, selectedCollection)
+      createEndpoints(config, loadedRoutes, selectedCollection, webSockets)
 
       app.use(bodyParser.urlencoded({extended: false}))
       app.use(bodyParser.json())
@@ -184,40 +252,9 @@ export const createServer = (config: Config): Server => {
 
       const port = config.port ?? 3000
 
-      httpServer.listen(port, () => {
+      server.listen(port, () => {
         logger.info(`Mocks server listening on port ${port}`)
       })
-
-      // Load websockets
-
-      if (webSockets) {
-        const webSocketsResult = validateWebSockets(webSockets)
-
-        if ("error" in webSocketsResult) {
-          logger.error(webSocketsResult.message)
-          process.exit(1)
-        }
-
-        webSockets.forEach((s) => {
-          const wss = new webSocket.Server({server: httpServer, path: s.path})
-
-          logger.info(
-            `Mock '${s.id}' web socket server running at path: ${s.path}`,
-          )
-
-          s.handler(wss, {
-            logEvent: (eventType) => {
-              if (eventType === "connected") {
-                logger.info(`Connected to '${s.id}' web socket`)
-              }
-
-              if (eventType === "messageSent") {
-                logger.info(`Sending message from '${s.id}' web socket`)
-              }
-            },
-          })
-        })
-      }
 
       return Promise.resolve()
     },

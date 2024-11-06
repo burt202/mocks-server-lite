@@ -1,4 +1,5 @@
 import {Request, RequestHandler, Response} from "express"
+import * as stream from "node:stream"
 import WebSocket from "ws"
 import {z} from "zod"
 
@@ -96,17 +97,15 @@ export const webSocketHandlerSchema = z.object({
   handler: z.function(),
 })
 
-export type WebSocketServer = WebSocket.Server
-
-export interface WebSocketHandlerCtx {
-  logEvent: (eventType: "connected" | "messageSent") => void
+export interface WsReq extends Request {
+  ws: {socket: stream.Duplex; head: Buffer}
 }
 
 export type WebSocketHandler = Omit<
   z.infer<typeof webSocketHandlerSchema>,
   "handler"
 > & {
-  handler: (wss: WebSocketServer, ctx: WebSocketHandlerCtx) => void
+  handler: (ws: WebSocket) => void
 }
 
 export const staticPathOptionsSchema = z.object({
