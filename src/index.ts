@@ -132,7 +132,7 @@ function createEndpoints(
     router.get(s.path, (req, res, next) => {
       const wsReq = req as WsReq
 
-      if (!req.headers.upgrade || s.path !== req.url) {
+      if (!req.headers.upgrade || s.path !== req.path) {
         next()
       } else {
         wss.handleUpgrade(
@@ -237,7 +237,7 @@ export const createServer = (config: Config): Server => {
 
         staticPaths.forEach((s) => {
           app.use(s.to, express.static(s.from))
-          logger.info(`'${s.from}' being served at: ${s.to}`)
+          logger.info(`Path '${s.from}' being served at: ${s.to}`)
         })
       }
 
@@ -254,6 +254,7 @@ export const createServer = (config: Config): Server => {
 
       server.listen(port, () => {
         logger.info(`Mocks server listening on port ${port}`)
+        logger.info(`------------------------------------------`)
       })
 
       return Promise.resolve()
