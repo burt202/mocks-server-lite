@@ -1,11 +1,11 @@
-import {expect, describe, it} from "vitest"
+import {describe, expect, it} from "vitest"
 
-import {Collection, Route, WebSocketHandler, StaticPathOptions} from "../types"
+import {Collection, Route, StaticPathOptions, WebSocketHandler} from "../types"
 import {
   validateCollections,
   validateRoutes,
-  validateWebSockets,
   validateStaticPaths,
+  validateWebSockets,
 } from "../utils"
 
 describe("validateRoutes", () => {

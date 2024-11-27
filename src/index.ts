@@ -1,8 +1,9 @@
+import * as stream from "node:stream"
+
 import * as bodyParser from "body-parser"
 import cors from "cors"
 import express from "express"
 import http from "http"
-import * as stream from "node:stream"
 import webSocket, {WebSocket} from "ws"
 
 import createLogger from "./logger"
@@ -16,12 +17,12 @@ import {
   WsReq,
 } from "./types"
 import {
+  getEndpointsForCollection,
+  getSelectedCollection,
   validateCollections,
   validateRoutes,
-  getSelectedCollection,
-  getEndpointsForCollection,
-  validateWebSockets,
   validateStaticPaths,
+  validateWebSockets,
 } from "./utils"
 
 let loadedRoutes: Array<Route> = []
