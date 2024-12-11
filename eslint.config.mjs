@@ -9,9 +9,6 @@ export default [
     ignores: ["dist/", "eslint.config.mjs"],
   },
   {
-    plugins: {
-      "simple-import-sort": simpleImportSort,
-    },
     languageOptions: {
       parser: tsEslint.parser,
       ecmaVersion: 2023,
@@ -27,6 +24,9 @@ export default [
   ...tsEslint.configs.recommendedTypeChecked,
   importPlugin.flatConfigs.recommended,
   {
+    plugins: {
+      "simple-import-sort": simpleImportSort,
+    },
     rules: {
       eqeqeq: "error",
       "object-shorthand": "error",

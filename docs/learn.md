@@ -7,13 +7,13 @@ npm i -D mocks-server-lite
 ```
 
 - Create a server file (see 'Server Config & Startup' section below)
-- Add a script to `package.json`, below is an example for TypeScript using `ts-node`:
+- Add a script to `package.json`, below is an example for TypeScript using `tsx`:
 
 ```
 {
   "scripts": {
     ...
-    "mocks" : "npx ts-node mocks/server.ts"
+    "mocks" : "npx tsx mocks/server.ts"
   }
 }
 ```
