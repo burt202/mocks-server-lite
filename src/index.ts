@@ -121,24 +121,24 @@ function createEndpoints(
 
   router.post(
     "/__send-ws-message",
-    (req: {body: {path?: string; message?: string}}, res) => {
-      const path = req.body.path
+    (req: {body: {id?: string; message?: string}}, res) => {
+      const id = req.body.id
 
-      if (!path) {
+      if (!id) {
         res.status(400)
-        res.send({error: "No websocket path supplied"})
+        res.send({error: "No websocket id supplied"})
         return
       }
 
-      if (!webSocketsMap[path]) {
+      if (!webSocketsMap[id]) {
         res.status(400)
-        res.send({error: "Websocket path not found"})
+        res.send({error: "Websocket not found"})
         return
       }
 
-      logger.info(`Sending message from '${path}' web socket`)
+      logger.info(`Sending message from '${id}' web socket`)
 
-      const ws = webSocketsMap[path]
+      const ws = webSocketsMap[id]
       ws.send(JSON.stringify(req.body.message ?? {}))
 
       res.send("OK")
@@ -170,7 +170,7 @@ function createEndpoints(
           (ws: WebSocket) => {
             logger.info(`Connected to '${s.id}' web socket`)
 
-            webSocketsMap[s.path] = ws
+            webSocketsMap[s.id] = ws
 
             // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-explicit-any, @typescript-eslint/unbound-method
             const original = ws.send as any
