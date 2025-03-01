@@ -95,7 +95,7 @@ export interface Logger {
 export const webSocketHandlerSchema = z.object({
   id: z.string(),
   path: z.string(),
-  handler: z.function(),
+  handler: z.function().optional(),
 })
 
 export interface WsReq extends Request {
@@ -106,7 +106,7 @@ export type WebSocketHandler = Omit<
   z.infer<typeof webSocketHandlerSchema>,
   "handler"
 > & {
-  handler: (ws: WebSocket) => void
+  handler?: (ws: WebSocket) => void
 }
 
 export const staticPathOptionsSchema = z.object({

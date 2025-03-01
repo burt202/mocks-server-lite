@@ -31,6 +31,7 @@ let loadedCollections: Array<Collection> = []
 let callLogs: CallLogEntry[] = []
 
 let router = express.Router()
+const webSocketsMap: Record<string, WebSocket> = {}
 
 const logger = createLogger()
 
@@ -118,6 +119,32 @@ function createEndpoints(
     },
   )
 
+  router.post(
+    "/__send-ws-message",
+    (req: {body: {path?: string; message?: string}}, res) => {
+      const path = req.body.path
+
+      if (!path) {
+        res.status(400)
+        res.send({error: "No websocket path supplied"})
+        return
+      }
+
+      if (!webSocketsMap[path]) {
+        res.status(400)
+        res.send({error: "Websocket path not found"})
+        return
+      }
+
+      logger.info(`Sending message from '${path}' web socket`)
+
+      const ws = webSocketsMap[path]
+      ws.send(JSON.stringify(req.body.message ?? {}))
+
+      res.send("OK")
+    },
+  )
+
   // Load websockets
 
   if (!webSockets) return
@@ -143,6 +170,8 @@ function createEndpoints(
           (ws: WebSocket) => {
             logger.info(`Connected to '${s.id}' web socket`)
 
+            webSocketsMap[s.path] = ws
+
             // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-explicit-any, @typescript-eslint/unbound-method
             const original = ws.send as any
 
@@ -152,7 +181,7 @@ function createEndpoints(
               return original.apply(ws, args)
             }
 
-            s.handler(ws)
+            if (s.handler) s.handler(ws)
           },
         )
       }
