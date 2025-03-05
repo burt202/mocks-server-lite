@@ -222,6 +222,23 @@ Routes and collections are required, but web sockets & static paths are optional
 
 You can setup web socket mocks to be available when the mocks server is running, but unlike routes and collections though, the behaviours of these cannot change dynamically.
 
+To mock a web socket, you can define a object as follows where the `id` is unique and the `path` defines the url the web socket will be running on.
+
+```
+import {WebSocketHandler} from "mocks-server-lite"
+
+const chat: WebSocketHandler = {
+  id: "chat",
+  path: "/chat",
+}
+```
+
+To add these, you just add them as an array when calling `server.start()`
+
+You have two ways of sending messages from a web socket.
+
+The first is by adding a static handler when you setup the web socket mock:
+
 ```
 import {WebSocketHandler} from "mocks-server-lite"
 
@@ -236,7 +253,20 @@ const chat: WebSocketHandler = {
 }
 ```
 
-To add these, you just add them as an array when calling `server.start()`
+The second is by using the special internal endpoint to trigger a message programmatically:
+
+```
+fetch(`http://localhost:3000/__send-ws-message`, {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify({
+    id, // should match the id of the web socket mock
+    message // object containing message to send from web socket
+  }),
+})
+```
 
 ### Static Paths
 

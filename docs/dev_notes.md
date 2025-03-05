@@ -1,6 +1,6 @@
 ### TODO
 
----
+- introduce inquirer or something similar
 
 ### Development/Testing
 
