@@ -87,6 +87,13 @@ export interface Config {
   port?: number
 }
 
+export interface Mocks {
+  routes: Array<Route>
+  collections: Array<Collection>
+  webSockets?: Array<WebSocketHandler>
+  staticPaths?: Array<StaticPathOptions>
+}
+
 export interface Logger {
   info: (msg: string) => void
   error: (msg: string) => void
@@ -117,14 +124,5 @@ export const staticPathOptionsSchema = z.object({
 export type StaticPathOptions = z.infer<typeof staticPathOptionsSchema>
 
 export interface Server {
-  start: ({
-    routes,
-    collections,
-    webSockets,
-  }: {
-    routes: Array<Route>
-    collections: Array<Collection>
-    webSockets?: Array<WebSocketHandler>
-    staticPaths?: Array<StaticPathOptions>
-  }) => Promise<void>
+  start: (mocks: Mocks) => Promise<void>
 }
