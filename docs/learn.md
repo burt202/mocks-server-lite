@@ -188,35 +188,38 @@ This can be very useful during a test run, see the [example repo](https://github
 
 NOTE: You can pass an optional `log` body property if you want something specific to be logged when the collection is changed.
 
-### Server Config & Startup
+### Server Creation & Startup
 
 Creating the server is very straight forward with minimal options:
 
 ```
 import {createServer} from "mocks-server-lite"
 
-const server = createServer({
-  delay?: number,
-  selected?: string,
-  port?: number,
-})
+void createServer(
+  mocks, // {routes, collections, webSockets?, staticPaths?}
+  config,
+)
+  .then((server) => {
+    void server.start()
+  })
 
-void server.start({routes, collections, webSockets, staticPaths})
 ```
 
-`.createServer` options
+`.createServer` mocks
 
-| ---      | ---                     | ---                                                                                                                                                              |
-| -------- | ----------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| delay    | optional, no default    | Simulate response time by adding a global delay for every response, can be overriden by any individual route variant                                             |
-| selected | optional, no default    | Choose which collection to start with, if nothing is supplied, or selected doesnt match a known collection, the first collection in the collections list is used |
-| port     | optional, default: 3000 | Port on which to run the mock server                                                                                                                             |
-
-`.start` options
-
-This method just takes a single object where you pass in your routes, collections, web sockets and static paths.
+This is where you pass in your routes, collections, web sockets and static paths.
 Inputs from all 4 of these are validated internally to ensure they are the correct shape, the server will exit early if not.
+
 Routes and collections are required, but web sockets & static paths are optional
+
+`.createServer` config
+
+| Option              | Type    | Required | Description                                                                                                                                                      |
+| ------------------- | ------- | -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| delay               | number  | false    | Simulate response time by adding a global delay for every response, can be overriden by any individual route variant                                             |
+| selected            | string  | false    | Choose which collection to start with, if nothing is supplied, or selected doesnt match a known collection, the first collection in the collections list is used |
+| port                | number  | false    | Port on which to run the mock server, defaults to 3000                                                                                                           |
+| skipSelectionPrompt | boolean | false    | Turn off collection selection on server start                                                                                                                    |
 
 ### Web Sockets
 
