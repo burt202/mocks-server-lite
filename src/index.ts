@@ -1,5 +1,6 @@
 import * as stream from "node:stream"
 
+import {select} from "@inquirer/prompts"
 import * as bodyParser from "body-parser"
 import cors from "cors"
 import express from "express"
@@ -11,6 +12,7 @@ import {
   CallLogEntry,
   Collection,
   Config,
+  Mocks,
   Route,
   Server,
   WebSocketHandler,
@@ -189,7 +191,24 @@ function createEndpoints(
   })
 }
 
-export const createServer = (config: Config): Server => {
+export const createServer = async (
+  mocks: Mocks,
+  config: Config,
+): Promise<Server> => {
+  const {routes, collections, webSockets, staticPaths} = mocks
+
+  const answer = config.skipSelectionPrompt
+    ? undefined
+    : await select({
+        message: "Select a collection",
+        choices: collections.map((c) => {
+          return {
+            name: c.id,
+            value: c.id,
+          }
+        }),
+      })
+
   const app = express()
   const server = http.createServer(app)
 
@@ -200,7 +219,7 @@ export const createServer = (config: Config): Server => {
   })
 
   return {
-    start: async ({routes, collections, webSockets, staticPaths}) => {
+    start: async () => {
       // Load routes
 
       const routesResult = validateRoutes(routes)
@@ -226,7 +245,7 @@ export const createServer = (config: Config): Server => {
       const selectedCollection = getSelectedCollection(
         logger,
         loadedCollections,
-        config.selected,
+        answer ?? config.selected,
       )
 
       logger.info(`Using collection: ${selectedCollection.id}`)

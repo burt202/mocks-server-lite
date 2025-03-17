@@ -85,6 +85,7 @@ export interface Config {
   delay?: number
   selected?: string
   port?: number
+  skipSelectionPrompt?: boolean
 }
 
 export interface Mocks {
@@ -124,5 +125,5 @@ export const staticPathOptionsSchema = z.object({
 export type StaticPathOptions = z.infer<typeof staticPathOptionsSchema>
 
 export interface Server {
-  start: (mocks: Mocks) => Promise<void>
+  start: () => Promise<void>
 }
