@@ -6,7 +6,7 @@ Add it to your project dev dependencies using NPM:
 npm i -D mocks-server-lite
 ```
 
-- Create a server file (see 'Server Config & Startup' section below)
+- Create a server file (see 'Server Creation & Startup' section below)
 - Add a script to `package.json`, below is an example for TypeScript using `tsx`:
 
 ```
