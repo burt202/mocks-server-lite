@@ -266,7 +266,7 @@ export const createServer = async (
       createEndpoints(config, loadedRoutes, selectedCollection, webSockets)
 
       app.use(bodyParser.urlencoded({extended: false}))
-      app.use(bodyParser.json())
+      app.use(bodyParser.json({limit: "10mb"}))
 
       app.use(cors())
 
