@@ -4,6 +4,10 @@ import {Request, RequestHandler, Response} from "express"
 import WebSocket from "ws"
 import {z} from "zod"
 
+const functionSchema = z.unknown().refine((val) => typeof val === "function", {
+  message: "Expected a function",
+})
+
 const routeVariantBaseSchema = z.object({
   id: z.string(),
   delay: z.number().optional(),
@@ -23,7 +27,7 @@ export type RouteVariantJson = z.infer<typeof routeVariantJsonSchema>
 
 const routeVariantHandlerSchema = routeVariantBaseSchema.extend({
   type: z.literal("handler"),
-  middleware: z.array(z.function()).optional(),
+  middleware: z.array(functionSchema).optional(),
   response: z.function(),
 })
 
@@ -103,7 +107,7 @@ export interface Logger {
 export const webSocketHandlerSchema = z.object({
   id: z.string(),
   path: z.string(),
-  handler: z.function().optional(),
+  handler: functionSchema.optional(),
 })
 
 export interface WsReq extends Request {

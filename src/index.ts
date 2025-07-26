@@ -5,7 +5,7 @@ import * as bodyParser from "body-parser"
 import cors from "cors"
 import express from "express"
 import http from "http"
-import webSocket, {WebSocket} from "ws"
+import {WebSocket, WebSocketServer} from "ws"
 
 import createLogger from "./logger"
 import {
@@ -152,7 +152,7 @@ function createEndpoints(
   if (!webSockets) return
 
   webSockets.forEach((s) => {
-    const wss = new webSocket.Server({
+    const wss = new WebSocketServer({
       noServer: true,
       path: s.path,
     })
