@@ -69,6 +69,27 @@ describe("validateRoutes", () => {
 
     expect(res).toEqual({success: true})
   })
+
+  it("should return successfully when a valid 'handler' route variant is passed", () => {
+    const routes = [
+      {
+        id: "get-users",
+        url: "/api/users",
+        method: "GET" as const,
+        variants: [
+          {
+            id: "success",
+            type: "handler" as const,
+            response: () => {},
+          },
+        ],
+      },
+    ]
+
+    const res = validateRoutes(routes)
+
+    expect(res).toEqual({success: true})
+  })
 })
 
 describe("validateCollections", () => {

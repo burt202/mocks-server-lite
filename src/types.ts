@@ -28,7 +28,7 @@ export type RouteVariantJson = z.infer<typeof routeVariantJsonSchema>
 const routeVariantHandlerSchema = routeVariantBaseSchema.extend({
   type: z.literal("handler"),
   middleware: z.array(functionSchema).optional(),
-  response: z.function(),
+  response: functionSchema,
 })
 
 export interface CallLogEntry {
