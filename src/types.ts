@@ -118,7 +118,7 @@ export type WebSocketHandler = Omit<
   z.infer<typeof webSocketHandlerSchema>,
   "handler"
 > & {
-  handler?: (ws: WebSocket) => void
+  handler?: (ws: WebSocket, params: {selectedCollection: string}) => void
 }
 
 export const staticPathOptionsSchema = z.object({

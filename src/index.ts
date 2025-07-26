@@ -27,12 +27,9 @@ import {
   validateWebSockets,
 } from "./utils"
 
-let loadedRoutes: Array<Route> = []
-let loadedCollections: Array<Collection> = []
-
 let callLogs: CallLogEntry[] = []
-
 let router = express.Router()
+
 const webSocketsMap: Record<string, WebSocket> = {}
 
 const logger = createLogger()
@@ -50,14 +47,15 @@ function addCallToLogs(req: express.Request) {
 
 function createEndpoints(
   config: Config,
-  loadedRoutes: Array<Route>,
   selectedCollection: Collection,
+  routes: Array<Route>,
+  collections: Array<Collection>,
   webSockets?: Array<WebSocketHandler>,
 ) {
   router = express.Router()
 
   callLogs = []
-  const endpoints = getEndpointsForCollection(selectedCollection, loadedRoutes)
+  const endpoints = getEndpointsForCollection(selectedCollection, routes)
 
   endpoints.forEach((e) => {
     const method = e.method.toLowerCase() as
@@ -103,7 +101,7 @@ function createEndpoints(
     (req: {body: {collection?: string; log?: string}}, res) => {
       const selectedCollection = getSelectedCollection(
         logger,
-        loadedCollections,
+        collections,
         req.body.collection,
       )
 
@@ -115,7 +113,13 @@ function createEndpoints(
 
       logger.info(`Using collection: ${selectedCollection.id}`)
 
-      createEndpoints(config, loadedRoutes, selectedCollection, webSockets)
+      createEndpoints(
+        config,
+        selectedCollection,
+        routes,
+        collections,
+        webSockets,
+      )
 
       res.send("OK")
     },
@@ -183,7 +187,9 @@ function createEndpoints(
               return original.apply(ws, args)
             }
 
-            if (s.handler) s.handler(ws)
+            if (s.handler) {
+              s.handler(ws, {selectedCollection: selectedCollection.id})
+            }
           },
         )
       }
@@ -229,22 +235,18 @@ export const createServer = async (
         process.exit(1)
       }
 
-      loadedRoutes = routes
-
       // Load collections
 
-      const collectionsResult = validateCollections(collections, loadedRoutes)
+      const collectionsResult = validateCollections(collections, routes)
 
       if ("error" in collectionsResult) {
         logger.error(collectionsResult.message)
         process.exit(1)
       }
 
-      loadedCollections = collections
-
       const selectedCollection = getSelectedCollection(
         logger,
-        loadedCollections,
+        collections,
         answer ?? config.selected,
       )
 
@@ -263,7 +265,13 @@ export const createServer = async (
 
       // Create endpoints and middlewares
 
-      createEndpoints(config, loadedRoutes, selectedCollection, webSockets)
+      createEndpoints(
+        config,
+        selectedCollection,
+        routes,
+        collections,
+        webSockets,
+      )
 
       app.use(bodyParser.urlencoded({extended: false}))
       app.use(bodyParser.json({limit: "10mb"}))

@@ -248,13 +248,15 @@ import {WebSocketHandler} from "mocks-server-lite"
 const chat: WebSocketHandler = {
   id: "chat",
   path: "/chat",
-  handler: (ws) => {
+  handler: (ws, {selectedCollection}) => {
     setTimeout(() => {
       ws.send(JSON.stringify({message: "Hello world!"}))
     }, 2500)
   },
 }
 ```
+
+The `selectedCollection` property holds the id of the collection when the websocket is connected.
 
 The second is by using the special internal endpoint to trigger a message programmatically:
 
