@@ -6,7 +6,7 @@ import importPlugin from "eslint-plugin-import"
 
 export default [
   {
-    ignores: ["dist/", "eslint.config.mjs"],
+    ignores: ["dist/", "eslint.config.mjs", "prettier.config.mjs"],
   },
   {
     languageOptions: {
