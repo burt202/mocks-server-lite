@@ -4,7 +4,7 @@ import {format} from "date-fns"
 import {Logger} from "./types"
 
 function log(level: string, msg: string) {
-  console.log(`${format(new Date(), "HH:mm:ss:SSS")} [${level}] ${msg}`)
+  console.info(`${format(new Date(), "HH:mm:ss:SSS")} [${level}] ${msg}`)
 }
 
 export default function createLogger(): Logger {
