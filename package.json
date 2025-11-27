@@ -28,7 +28,7 @@
     "prepare": "husky",
     "lint": "eslint",
     "prettier-check": "prettier \"**/*.ts{,x}\" --check",
-    "test": "vitest --run",
+    "test": "vitest --run src/",
     "pre-commit": "npm run lint && npm run prettier-check",
     "pre-push": "npm run test && npm run build",
     "build": "rm -rf dist/ && tsc"
