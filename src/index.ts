@@ -80,6 +80,12 @@ function createEndpoints(
       const delay = e.variant.delay ? e.variant.delay : (config.delay ?? 0)
       const variantType = e.variant.type
 
+      const sendWsMessage = (id: string, message: object) => {
+        const ws = webSocketsMap[id]
+        if (!ws) return
+        ws.send(JSON.stringify(message))
+      }
+
       setTimeout(() => {
         switch (variantType) {
           case "json": {
@@ -88,7 +94,7 @@ function createEndpoints(
             break
           }
           case "handler": {
-            e.variant.response(req, res, {callLogs, previous})
+            e.variant.response(req, res, {callLogs, previous, sendWsMessage})
             break
           }
         }
@@ -127,7 +133,7 @@ function createEndpoints(
 
   router.post(
     "/__send-ws-message",
-    (req: {body: {id?: string; message?: string}}, res) => {
+    (req: {body: {id?: string; message?: object}}, res) => {
       const id = req.body.id
 
       if (!id) {

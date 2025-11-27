@@ -89,6 +89,7 @@ The response handler function also gets passed a third parameter:
 {
   callLogs: CallLogEntry[]
   previous: CallLogEntry[]
+  sendWsMessage: (id: string, message: object) => void
 }
 
 CallLogEntry = {
@@ -103,6 +104,7 @@ CallLogEntry = {
 
 `callLogs` keeps tracks of all endpoints called since the server started or the last collection change
 `previous` an array of all previous calls in the call log that match the current method AND path. Useful if you wanted to return something different on subsequent calls.
+`sendWsMessage` a function that allows a response handler to send a message on any registered web socket
 
 **Route Middleware**
 

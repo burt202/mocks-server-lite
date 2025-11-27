@@ -43,6 +43,7 @@ export interface CallLogEntry {
 export interface ResponseHandlerCtx {
   callLogs: CallLogEntry[]
   previous: CallLogEntry[]
+  sendWsMessage: (id: string, message: object) => void
 }
 
 export type RouteVariantHandler<
