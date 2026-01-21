@@ -21,14 +21,14 @@ export default [
   },
   eslintJs.configs.recommended,
   ...tsEslint.configs.recommended,
-  ...tsEslint.configs.recommendedTypeChecked,
+  ...tsEslint.configs.strictTypeChecked,
   importPlugin.flatConfigs.recommended,
   {
     plugins: {
       "simple-import-sort": simpleImportSort,
     },
     rules: {
-      complexity: ["error", {max: 10}],
+      complexity: ["error", {max: 15}],
       eqeqeq: "error",
       "no-console": ["warn", {allow: ["info", "warn", "error"]}],
       "object-shorthand": "error",
@@ -40,10 +40,15 @@ export default [
         },
       ],
       "simple-import-sort/imports": "error",
+      "simple-import-sort/exports": "error",
       "import/no-unresolved": "off",
       "import/first": "error",
       "import/newline-after-import": "error",
       "import/no-duplicates": "error",
+      "@typescript-eslint/restrict-template-expressions": "off",
+      "@typescript-eslint/no-confusing-void-expression": "off",
+      "@typescript-eslint/no-unnecessary-type-parameters": "off",
+      "@typescript-eslint/no-unnecessary-condition": "off",
     },
   },
 ]
