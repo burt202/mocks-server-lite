@@ -81,6 +81,8 @@ export type Route = Omit<z.infer<typeof routeSchema>, "variants"> & {
 
 export const collectionSchema = z.object({
   id: z.string(),
+  useBaseRouteVariants: z.boolean().optional(),
+  without: z.array(z.string()).optional(),
   routes: z.array(z.string()),
 })
 
@@ -91,6 +93,7 @@ export interface Config {
   selected?: string
   port?: number
   skipSelectionPrompt?: boolean
+  defaultRouteVariantName?: string
 }
 
 export interface Mocks {

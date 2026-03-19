@@ -207,7 +207,29 @@ export const createServer = async (
   mocks: Mocks,
   config: Config,
 ): Promise<Server> => {
-  const {routes, collections, webSockets, staticPaths} = mocks
+  const {routes, webSockets, staticPaths} = mocks
+
+  const defaultRouteVariantName = config.defaultRouteVariantName ?? "base"
+
+  const baseCollection = {
+    id: "base",
+    routes: routes.map((r) => `${r.id}:${defaultRouteVariantName}`),
+  }
+
+  const collections = [
+    baseCollection,
+    ...mocks.collections.map((c) => {
+      const baseRoutes = c.useBaseRouteVariants ? baseCollection.routes : []
+      const filtered = c.without
+        ? baseRoutes.filter((r) => !(c.without ?? []).includes(r))
+        : baseRoutes
+
+      return {
+        id: c.id,
+        routes: [...filtered, ...c.routes],
+      }
+    }),
+  ]
 
   const answer = config.skipSelectionPrompt
     ? undefined
@@ -256,7 +278,9 @@ export const createServer = async (
         answer ?? config.selected,
       )
 
-      logger.info(`Using collection: ${selectedCollection.id}`)
+      logger.info(
+        `Using collection: ${selectedCollection.id} (${selectedCollection.routes.length} route${selectedCollection.routes.length !== 1 ? "s" : ""})`,
+      )
 
       // Validate web sockets
 
