@@ -30,6 +30,7 @@ Routes are for defining the endpoints you want to mock where each have a `url`, 
 
 - You can add a `delay` to any variant to simulate response time, this overrides the global value if set
 - Route id's should be unique across all routes, whereas variant id's only need to be unique within its route.
+- Every route should have a 'base' variant. This response is automatically added to a `base` collection which acts as the default set of responses. You can change the name of this default, forced variant using the `defaultRouteVariantName` config value
 
 ```
 import {Route} from "mocks-server-lite"
@@ -168,7 +169,9 @@ The `id` should be unique and is used to set the current collection either on se
 
 The `routes` array should be a list of valid route/variant pairing in the form of `[routeId]:[variantId]`
 
-You can have as many collections as you want, and each collection can have as many routes as you want
+You can have as many collections as you want, and each collection can have as many routes as you want.
+
+A `base` collection is automatically created using all `base` variants. You can inherit all `base` variants for another collection using the `useBaseRouteVariants` option, and then use the `without` option to remove any variants you dont want. This is help best manage many large collections for the same app.
 
 ### Change Collection
 
@@ -216,12 +219,13 @@ Routes and collections are required, but web sockets & static paths are optional
 
 `.createServer` config
 
-| Option              | Type    | Required | Description                                                                                                                                                      |
-| ------------------- | ------- | -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| delay               | number  | false    | Simulate response time by adding a global delay for every response, can be overriden by any individual route variant                                             |
-| selected            | string  | false    | Choose which collection to start with, if nothing is supplied, or selected doesnt match a known collection, the first collection in the collections list is used |
-| port                | number  | false    | Port on which to run the mock server, defaults to 3000                                                                                                           |
-| skipSelectionPrompt | boolean | false    | Turn off collection selection on server start                                                                                                                    |
+| Option                  | Type    | Required | Description                                                                                                                                                      |
+| ----------------------- | ------- | -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| delay                   | number  | false    | Simulate response time by adding a global delay for every response, can be overriden by any individual route variant                                             |
+| selected                | string  | false    | Choose which collection to start with, if nothing is supplied, or selected doesnt match a known collection, the first collection in the collections list is used |
+| port                    | number  | false    | Port on which to run the mock server, defaults to 3000                                                                                                           |
+| skipSelectionPrompt     | boolean | false    | Turn off collection selection on server start                                                                                                                    |
+| defaultRouteVariantName | string  | false    | Override default route variant name which starts as 'base'                                                                                                       |
 
 ### Web Sockets
 

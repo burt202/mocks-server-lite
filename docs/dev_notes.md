@@ -19,3 +19,5 @@
 - the title can again just be the version number
 - in the description field add relevant info that describes the release and changes going out
 - lastly click 'Publish release' which will kick off the `publish.yml` github workflow which ultimately runs `npm publish`
+
+NOTE: if the publishing doesnt work, and errors with a E404 error, its probably because the npm token needs refreshing
